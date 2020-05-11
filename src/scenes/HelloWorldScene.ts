@@ -8,17 +8,19 @@ export default class HelloWorldScene extends Phaser.Scene {
   private gameOver = false;
   private score = 0;
   private scoreText?: Phaser.GameObjects.Text;
-
   private bombs?: Phaser.Physics.Arcade.Group;
+
   constructor() {
     super('hello-world');
   }
 
   preload() {
+    this.load.image
     this.load.image('sky', 'assets/sky.png');
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('bomb', 'assets/bomb.png');
+
     this.load.spritesheet('dude', 'assets/dude.png', {
       frameWidth: 32,
       frameHeight: 48,
@@ -26,6 +28,9 @@ export default class HelloWorldScene extends Phaser.Scene {
   }
 
   create() {
+    const camera = this.cameras.main;
+    camera.setBounds(0, 0, 800, 600, true);
+
     this.add.image(400, 300, 'sky');
     this.platforms = this.physics.add.staticGroup();
     const ground = this.platforms.create(
@@ -66,6 +71,9 @@ export default class HelloWorldScene extends Phaser.Scene {
       repeat: -1,
     });
 
+    camera.startFollow(this.player, true);
+
+
     this.physics.add.collider(this.player, this.platforms);
     this.cursors = this.input.keyboard.createCursorKeys();
     this.stars = this.physics.add.group({
@@ -100,7 +108,7 @@ export default class HelloWorldScene extends Phaser.Scene {
     player: Phaser.GameObjects.GameObject,
     b: Phaser.GameObjects.GameObject
   ) {
-    this.physics.pause();
+    // this.physics.pause();
     this.platforms?.setTint(0xff0000);
     this.player?.anims.play('turns');
     this.gameOver = true;
