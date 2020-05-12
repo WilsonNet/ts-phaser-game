@@ -1,9 +1,7 @@
-![phaser3-parceljs-template](https://user-images.githubusercontent.com/2236153/71606463-37a0da80-2b2e-11ea-9b5f-5d26ccc84f91.png)
 
-# Phaser3 + Parcel Template
-> For people who want to spend time making games instead of configuring build tools.
+# Project.io
 
-![License](https://img.shields.io/badge/license-MIT-green)
+
 
 ## Prerequisites
 
@@ -136,15 +134,7 @@ It does not aim to be opinionated.
 
 ## TypeScript
 
-Check out the [phaser3-typescript-parcel-template](https://github.com/ourcade/phaser3-typescript-parcel-template) for a ready-to-use version of this template in TypeScript!
-
-## Flow
-
-It just works. (Thanks to Parcel)
-
-Just put `// @flow` at the top of your `.js` files. Parcel will handle the rest.
-
-[Go here for more information on how to use Flow](https://flow.org/).
+This code uses typescript.
 
 ## Dev Server Port
 
@@ -166,4 +156,4 @@ Change 8000 to whatever you want.
 
 ## License
 
-[MIT License](https://github.com/ourcade/phaser3-parcel-template/blob/master/LICENSE)
+[GPL3 License](https://github.com/WilsonNet/vento-aureo/blob/master/LICENSE)
