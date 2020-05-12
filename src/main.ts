@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 
 import HelloWorldScene from './scenes/HelloWorldScene';
 
-
+// Comentário
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
