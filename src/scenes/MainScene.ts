@@ -1,6 +1,6 @@
 import Phaser, { Physics } from 'phaser';
 
-export default class HelloWorldScene extends Phaser.Scene {
+export default class MainScene extends Phaser.Scene {
   private platforms?: Phaser.Physics.Arcade.StaticGroup;
   private player?: Phaser.Physics.Arcade.Sprite;
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys;

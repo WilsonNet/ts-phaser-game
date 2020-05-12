@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 
-import HelloWorldScene from './scenes/HelloWorldScene';
+import MainScene from './scenes/MainScene';
 
 // Comentário
 
@@ -15,7 +15,7 @@ const config: Phaser.Types.Core.GameConfig = {
       debug: true,
     },
   },
-  scene: [HelloWorldScene],
+  scene: [MainScene],
 };
 
 export default new Phaser.Game(config);
