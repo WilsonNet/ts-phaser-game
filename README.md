@@ -134,7 +134,7 @@ It does not aim to be opinionated.
 
 ## TypeScript
 
-This code uses typescript.
+This code uses TypeScript.
 
 ## Dev Server Port
 
