@@ -9,6 +9,32 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
     this.body.reset(x, y);
     this.setActive(true);
     this.setVisible(true);
-    
+  }
+
+  preUpdate(time: number, delta: number) {
+    super.preUpdate(time, delta);
+    if (this.y <= -32) {
+      this.setActive(false);
+      this.setVisible(false);
+    }
+  }
+}
+
+class Bullets extends Phaser.Physics.Arcade.Group {
+  constructor(scene: Phaser.Scene) {
+    super(scene.physics.world, scene);
+
+    this.createMultiple({
+      frameQuantity: 5,
+      key: 'bullet',
+      active: false,
+      visible: false,
+      classType: Bullet,
+    });
+  }
+
+  fireBullet(x: number, y: number) {
+    let bullet = this.getFirstDead(false);
+    bullet?.fire(x, y);
   }
 }
