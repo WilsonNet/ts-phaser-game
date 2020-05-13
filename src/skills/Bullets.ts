@@ -20,7 +20,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
   }
 }
 
-class Bullets extends Phaser.Physics.Arcade.Group {
+export default class Bullets extends Phaser.Physics.Arcade.Group {
   constructor(scene: Phaser.Scene) {
     super(scene.physics.world, scene);
 
