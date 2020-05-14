@@ -1,5 +1,7 @@
 import Phaser, { Physics } from 'phaser';
 import Bullets from '../skills/Bullets';
+import Preloader from './Preloader';
+import { createDudeAnims } from '~/characters/dude/dudeAnims';
 export default class Game extends Phaser.Scene {
   private platforms?: Phaser.Physics.Arcade.StaticGroup;
   private player?: Phaser.Physics.Arcade.Sprite;
@@ -14,15 +16,12 @@ export default class Game extends Phaser.Scene {
     super('game');
   }
 
-  preload() {
-
-  }
+  preload() {}
 
   create() {
     const camera = this.cameras.main;
     const bullets = new Bullets(this);
-    console.log('MainScene -> create -> bullets', bullets);
-    console.log(bullets);
+    createDudeAnims(this.anims);
 
     camera.setBounds(0, 0, 800, 600, true);
 
@@ -42,29 +41,6 @@ export default class Game extends Phaser.Scene {
     this.player = this.physics.add.sprite(100, 450, 'dude');
     this.player.setBounce(0.2);
     this.player.setCollideWorldBounds(true);
-    this.anims.create({
-      key: 'left',
-      frames: this.anims.generateFrameNumbers('dude', {
-        start: 0,
-        end: 3,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: 'turn',
-      frames: [{ key: 'dude', frame: 4 }],
-      frameRate: 20,
-    });
-    this.anims.create({
-      key: 'right',
-      frames: this.anims.generateFrameNumbers('dude', {
-        start: 5,
-        end: 8,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
 
     camera.startFollow(this.player, true);
 
@@ -96,6 +72,10 @@ export default class Game extends Phaser.Scene {
     this.bombs = this.physics.add.group();
     this.physics.add.collider(this.bombs, this.platforms);
     this.physics.add.collider(this.player, this.bombs, this.handleHitBomb);
+
+    this.input.on('pointerdown', (pointer) => {
+      bullets.fireBullet(pointer.x, pointer.y);
+    });
   }
 
   private handleHitBomb(

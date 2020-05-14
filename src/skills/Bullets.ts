@@ -2,13 +2,14 @@ import Phaser from 'phaser';
 
 class Bullet extends Phaser.Physics.Arcade.Sprite {
   constructor(scene: Phaser.Scene, x: number, y: number) {
-    super(scene, x, y, 'bullet');
+    super(scene, x, y, 'fireball');
   }
-
   fire(x: number, y: number) {
     this.body.reset(x, y);
     this.setActive(true);
     this.setVisible(true);
+    this.setGravityY(0);
+    this.setVelocityY(-200);
   }
 
   preUpdate(time: number, delta: number) {
@@ -31,6 +32,7 @@ export default class Bullets extends Phaser.Physics.Arcade.Group {
       visible: false,
       classType: Bullet,
     });
+
   }
 
   fireBullet(x: number, y: number) {
