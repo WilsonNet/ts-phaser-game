@@ -1,4 +1,5 @@
 import Phaser, { Physics } from 'phaser';
+import Bullets from '../scenes/MainScene';
 
 export default class MainScene extends Phaser.Scene {
   private platforms?: Phaser.Physics.Arcade.StaticGroup;
@@ -15,7 +16,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image
+    this.load.image;
     this.load.image('sky', 'assets/sky.png');
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/star.png');
@@ -29,6 +30,11 @@ export default class MainScene extends Phaser.Scene {
 
   create() {
     const camera = this.cameras.main;
+    const bullets = new Bullets();
+    console.log("MainScene -> create -> bullets", bullets)
+    console.log(bullets)
+
+
     camera.setBounds(0, 0, 800, 600, true);
 
     this.add.image(400, 300, 'sky');
@@ -72,7 +78,6 @@ export default class MainScene extends Phaser.Scene {
     });
 
     camera.startFollow(this.player, true);
-
 
     this.physics.add.collider(this.player, this.platforms);
     this.cursors = this.input.keyboard.createCursorKeys();
