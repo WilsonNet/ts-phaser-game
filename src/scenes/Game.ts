@@ -1,7 +1,6 @@
 import Phaser, { Physics } from 'phaser';
-import Bullets from '../scenes/MainScene';
-
-export default class MainScene extends Phaser.Scene {
+import Bullets from '../skills/Bullets';
+export default class Game extends Phaser.Scene {
   private platforms?: Phaser.Physics.Arcade.StaticGroup;
   private player?: Phaser.Physics.Arcade.Sprite;
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -12,28 +11,18 @@ export default class MainScene extends Phaser.Scene {
   private bombs?: Phaser.Physics.Arcade.Group;
 
   constructor() {
-    super('hello-world');
+    super('game');
   }
 
   preload() {
-    this.load.image;
-    this.load.image('sky', 'assets/sky.png');
-    this.load.image('ground', 'assets/platform.png');
-    this.load.image('star', 'assets/star.png');
-    this.load.image('bomb', 'assets/bomb.png');
 
-    this.load.spritesheet('dude', 'assets/dude.png', {
-      frameWidth: 32,
-      frameHeight: 48,
-    });
   }
 
   create() {
     const camera = this.cameras.main;
-    const bullets = new Bullets();
-    console.log("MainScene -> create -> bullets", bullets)
-    console.log(bullets)
-
+    const bullets = new Bullets(this);
+    console.log('MainScene -> create -> bullets', bullets);
+    console.log(bullets);
 
     camera.setBounds(0, 0, 800, 600, true);
 

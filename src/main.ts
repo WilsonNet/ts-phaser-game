@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 
-import MainScene from './scenes/MainScene';
+import Game from './scenes/Game';
+import Preloader from './scenes/Preloader';
 
 // Comentário
 
@@ -15,7 +16,7 @@ const config: Phaser.Types.Core.GameConfig = {
       debug: true,
     },
   },
-  scene: [MainScene],
+  scene: [Preloader, Game],
 };
 
 export default new Phaser.Game(config);
