@@ -3,12 +3,15 @@ import Phaser from 'phaser';
 class Bullet extends Phaser.Physics.Arcade.Sprite {
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, 'fireball');
-    
   }
-  fire(x: number, y: number) {
+  fire(x: number, y: number, angle: number) {
+
+    console.log("Bullet -> fire -> angle", angle)
     this.body.reset(x, y);
     this.setActive(true);
     this.setVisible(true);
+    this.scene.physics.velocityFromRotation(angle, 600, this.body.velocity)
+    console.log(this.body.velocity)
   }
 
   preUpdate(time: number, delta: number) {
@@ -24,7 +27,7 @@ export default class Bullets extends Phaser.Physics.Arcade.Group {
   constructor(scene: Phaser.Scene) {
     super(scene.physics.world, scene);
     this.createMultiple({
-      frameQuantity: 5,
+      frameQuantity: 10,
       key: 'bullet',
       active: false,
       visible: false,
@@ -33,8 +36,8 @@ export default class Bullets extends Phaser.Physics.Arcade.Group {
 
   }
 
-  fireBullet(x: number, y: number) {
+  fireBullet(x: number, y: number, angle: number) {
     let bullet = this.getFirstDead(false);
-    bullet?.fire(x, y);
+    bullet?.fire(x, y, angle);
   }
 }

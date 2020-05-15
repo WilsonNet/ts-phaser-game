@@ -20,7 +20,6 @@ export default class Game extends Phaser.Scene {
 
   create () {
     const camera = this.cameras.main
-    const bullets = new Bullets(this)
     createDudeAnims(this.anims)
 
     camera.setBounds(0, 0, 800, 600, true)
@@ -73,24 +72,33 @@ export default class Game extends Phaser.Scene {
     this.physics.add.collider(this.bombs, this.platforms)
     this.physics.add.collider(this.player, this.bombs, this.handleHitBomb)
     const line = new Phaser.Geom.Line()
-    const gfx = this.add.graphics().setDefaultStyles({ lineStyle: { width: 10, color: 0xffdd00, alpha: 0.5 } });
-
+    const gfx = this.add.graphics().setDefaultStyles({
+      lineStyle: { width: 10, color: 0xffdd00, alpha: 0.5 }
+    })
+    let angle = 0
     this.input.on('pointermove', pointer => {
+      if(!this.player) return;
       const playerVector = new Phaser.Math.Vector2(
         this.player?.x,
         this.player?.y
       )
-      const angle = Phaser.Math.Angle.BetweenPoints(playerVector, pointer)
+      angle = Phaser.Math.Angle.BetweenPoints(playerVector, pointer)
       Phaser.Geom.Line.SetToAngle(
         line,
-        this.player?.x as number,
-        this.player?.y as number,
+        this.player?.x,
+        this.player?.y,
         angle,
         128
       )
       gfx.clear().strokeLineShape(line)
+    })
+    const bullets = new Bullets(this)
 
-      // bullets.fireBullet(pointer.x, pointer.y)
+
+    this.input.on('pointerdown', pointer => {
+      if (!this.player) return;
+      console.log("Game -> create -> angle", angle)
+      bullets.fireBullet(this.player?.body.x, this.player?.body.y, angle)
     })
   }
 
