@@ -1,4 +1,4 @@
-import Phaser, { Physics } from 'phaser'
+import Phaser, { Physics, Time } from 'phaser'
 import Bullets from '../skills/Bullets'
 import Preloader from './Preloader'
 import { createDudeAnims } from '~/characters/dude/dudeAnims'
@@ -11,6 +11,7 @@ export default class Game extends Phaser.Scene {
   private score = 0
   private scoreText?: Phaser.GameObjects.Text
   private bombs?: Phaser.Physics.Arcade.Group
+  private firstTap
 
   constructor () {
     super('game')
@@ -77,7 +78,7 @@ export default class Game extends Phaser.Scene {
     })
     let angle = 0
     this.input.on('pointermove', pointer => {
-      if(!this.player) return;
+      if (!this.player) return
       const playerVector = new Phaser.Math.Vector2(
         this.player?.x,
         this.player?.y
@@ -94,10 +95,9 @@ export default class Game extends Phaser.Scene {
     })
     const bullets = new Bullets(this)
 
-
     this.input.on('pointerdown', pointer => {
-      if (!this.player) return;
-      console.log("Game -> create -> angle", angle)
+      if (!this.player) return
+      console.log('Game -> create -> angle', angle)
       bullets.fireBullet(this.player?.body.x, this.player?.body.y, angle)
     })
   }
@@ -143,14 +143,16 @@ export default class Game extends Phaser.Scene {
     }
   }
 
-  update () {
-    if (this.cursors?.left?.isDown) {
+  update (t: number, dt: number) {
+    // console.log("Game -> update -> dt", dt)
+    // console.log("Game -> update -> t", t)
+    if (!this.cursors?.right?.isDown && this.cursors?.left?.isDown) {
       this.player?.setVelocityX(-160)
       this.player?.anims.play('left', true)
-    } else if (this.cursors?.right?.isDown) {
+    } else if (this.cursors?.right?.isDown && !this.cursors?.left?.isDown) {
       this.player?.setVelocityX(160)
       this.player?.anims.play('right', true)
-    } else {
+      } else {
       this.player?.setVelocityX(0)
       this.player?.anims.play('turn')
     }
