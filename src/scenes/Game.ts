@@ -5,17 +5,14 @@ import { createDudeAnims } from '~/characters/dude/dudeAnims'
 export default class Game extends Phaser.Scene {
   private platforms?: Phaser.Physics.Arcade.StaticGroup
   private player?: Phaser.Physics.Arcade.Sprite
-  private cursors?: Phaser.Types.Input.Keyboard.CursorKeys
+  private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
   private stars?: Phaser.Physics.Arcade.Group
   private gameOver = false
   private score = 0
   private scoreText?: Phaser.GameObjects.Text
   private bombs?: Phaser.Physics.Arcade.Group
   private doublePressCounter = 0
-  private doublePressEligibility = {
-    left: false,
-    right: false
-  }
+  private doublePressEligibility = {}
 
   constructor () {
     super('game')
@@ -54,7 +51,8 @@ export default class Game extends Phaser.Scene {
       left: Phaser.Input.Keyboard.KeyCodes.A,
       down: Phaser.Input.Keyboard.KeyCodes.S,
       right: Phaser.Input.Keyboard.KeyCodes.D,
-      switchEelee: Phaser.Input.Keyboard.KeyCodes.ONE,
+      switchMelee: Phaser.Input.Keyboard.KeyCodes.ONE,
+      space: Phaser.Input.Keyboard.KeyCodes.SPACE
     })
 
     this.stars = this.physics.add.group({
@@ -153,12 +151,36 @@ export default class Game extends Phaser.Scene {
       }
     }
   }
+  checkDoubleEligibility (
+    key: Phaser.Input.Keyboard.Key,
+    eligibilityState: Object,
+    action?: Function | undefined
+  ) {
+    const { keyCode } = key
+    const lastTime = eligibilityState[keyCode]?.lastTime ?? false
 
+    const currentTime = this.time.now
+    if (keyCode && lastTime && currentTime - lastTime > 300) {
+      console.log('hayai')
+    }
+    let result = false
+    Phaser.Input.Keyboard.JustDown(key) && eligibilityState[keyCode]
+      ? (result = false)
+      : (result = true)
+    if (!result) console.log('foi')
+    eligibilityState[keyCode] = {
+      result,
+      lastTime: currentTime
+    }
+  }
   update (t: number, dt: number) {
-    // console.log("Game -> update -> dt", dt)
-    // console.log("Game -> update -> t", t)
-    // Phaser.Input.Keyboard.JustDown(this.cursors?.right)
+    // Esquerda
     if (!this.cursors?.right?.isDown && this.cursors?.left?.isDown) {
+      console.log('oiii')
+      this.checkDoubleEligibility(
+        this.cursors.left as Phaser.Input.Keyboard.Key,
+        this.doublePressEligibility
+      )
       this.player?.setVelocityX(-160)
       this.player?.anims.play('left', true)
     } else if (this.cursors?.right?.isDown && !this.cursors?.left?.isDown) {
