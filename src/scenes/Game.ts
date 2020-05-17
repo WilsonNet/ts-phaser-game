@@ -11,7 +11,11 @@ export default class Game extends Phaser.Scene {
   private score = 0
   private scoreText?: Phaser.GameObjects.Text
   private bombs?: Phaser.Physics.Arcade.Group
-  private firstTap
+  private doublePressCounter = 0
+  private doublePressEligibility = {
+    left: false,
+    right: false
+  }
 
   constructor () {
     super('game')
@@ -45,7 +49,14 @@ export default class Game extends Phaser.Scene {
     camera.startFollow(this.player, true)
 
     this.physics.add.collider(this.player, this.platforms)
-    this.cursors = this.input.keyboard.createCursorKeys()
+    this.cursors = this.input.keyboard.addKeys({
+      up: Phaser.Input.Keyboard.KeyCodes.W,
+      left: Phaser.Input.Keyboard.KeyCodes.A,
+      down: Phaser.Input.Keyboard.KeyCodes.S,
+      right: Phaser.Input.Keyboard.KeyCodes.D,
+      switchEelee: Phaser.Input.Keyboard.KeyCodes.ONE,
+    })
+
     this.stars = this.physics.add.group({
       key: 'star',
       repeat: 11,
@@ -146,13 +157,14 @@ export default class Game extends Phaser.Scene {
   update (t: number, dt: number) {
     // console.log("Game -> update -> dt", dt)
     // console.log("Game -> update -> t", t)
+    // Phaser.Input.Keyboard.JustDown(this.cursors?.right)
     if (!this.cursors?.right?.isDown && this.cursors?.left?.isDown) {
       this.player?.setVelocityX(-160)
       this.player?.anims.play('left', true)
     } else if (this.cursors?.right?.isDown && !this.cursors?.left?.isDown) {
       this.player?.setVelocityX(160)
       this.player?.anims.play('right', true)
-      } else {
+    } else {
       this.player?.setVelocityX(0)
       this.player?.anims.play('turn')
     }
