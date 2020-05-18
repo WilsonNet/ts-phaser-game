@@ -156,27 +156,26 @@ export default class Game extends Phaser.Scene {
     eligibilityState: Object,
     action?: Function | undefined
   ) {
+    //Variable declarations
     const { keyCode } = key
-    const lastTime = eligibilityState[keyCode]?.lastTime ?? false
-
+    const lastTime = eligibilityState[keyCode]?.lastTime ?? 0
     const currentTime = this.time.now
-    if (keyCode && lastTime && currentTime - lastTime > 300) {
-      console.log('hayai')
-    }
-    let result = false
-    Phaser.Input.Keyboard.JustDown(key) && eligibilityState[keyCode]
-      ? (result = false)
-      : (result = true)
-    if (!result) console.log('foi')
+    let canDouble = eligibilityState[keyCode]?.canDouble ?? false
+    const isJustPressed = Phaser.Input.Keyboard.JustDown(key)
+    //Logic
+    const deltaTime = currentTime - lastTime; 
+    isJustPressed && canDouble ? (canDouble = false) : (canDouble = true)
     eligibilityState[keyCode] = {
-      result,
+      canDouble: canDouble,
       lastTime: currentTime
+    }
+    if (!canDouble && deltaTime < 200) {
+      console.table({ hayai: '早い', deltaTime, currentTime, lastTime })
     }
   }
   update (t: number, dt: number) {
     // Esquerda
     if (!this.cursors?.right?.isDown && this.cursors?.left?.isDown) {
-      console.log('oiii')
       this.checkDoubleEligibility(
         this.cursors.left as Phaser.Input.Keyboard.Key,
         this.doublePressEligibility
