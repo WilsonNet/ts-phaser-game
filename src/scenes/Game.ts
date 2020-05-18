@@ -100,7 +100,7 @@ export default class Game extends Phaser.Scene {
         angle,
         128
       )
-      gfx.clear().strokeLineShape(line)
+      // gfx.clear().strokeLineShape(line)
     })
     const bullets = new Bullets(this)
 
@@ -153,38 +153,59 @@ export default class Game extends Phaser.Scene {
   }
   checkDoubleEligibility (
     key: Phaser.Input.Keyboard.Key,
-    eligibilityState: Object,
-    action?: Function | undefined
+    eligibilityState: Object
   ) {
     //Variable declarations
     const { keyCode } = key
     const lastTime = eligibilityState[keyCode]?.lastTime ?? 0
     const currentTime = this.time.now
-    let canDouble = eligibilityState[keyCode]?.canDouble ?? false
     const isJustPressed = Phaser.Input.Keyboard.JustDown(key)
+    const deltaTime = currentTime - lastTime
+    let canDouble = eligibilityState[keyCode]?.canDouble ?? false
     //Logic
-    const deltaTime = currentTime - lastTime; 
-    isJustPressed && canDouble ? (canDouble = false) : (canDouble = true)
+    isJustPressed && canDouble && deltaTime < 200
+      ? (canDouble = true)
+      : (canDouble = false)
+    if (canDouble)
+      console.table({ hayai: '早い', deltaTime, currentTime, lastTime })
+    //State update
     eligibilityState[keyCode] = {
-      canDouble: canDouble,
+      canDouble: !canDouble, // Can't double if doubled
       lastTime: currentTime
     }
-    if (!canDouble && deltaTime < 200) {
-      console.table({ hayai: '早い', deltaTime, currentTime, lastTime })
-    }
+    // Return
+    return canDouble
   }
   update (t: number, dt: number) {
+    if (!this.player) return
     // Esquerda
+    const sideDash = 8600;
+    const sideRun = 160
     if (!this.cursors?.right?.isDown && this.cursors?.left?.isDown) {
-      this.checkDoubleEligibility(
+
+      if (this.checkDoubleEligibility(
         this.cursors.left as Phaser.Input.Keyboard.Key,
-        this.doublePressEligibility
-      )
-      this.player?.setVelocityX(-160)
+        this.doublePressEligibility,
+      )){
+        this.player?.setVelocityX(-sideDash)
+      } else {
+        this.player?.setVelocityX(-sideRun)
+      }
       this.player?.anims.play('left', true)
+
     } else if (this.cursors?.right?.isDown && !this.cursors?.left?.isDown) {
-      this.player?.setVelocityX(160)
+      
+      if (this.checkDoubleEligibility(
+        this.cursors.right as Phaser.Input.Keyboard.Key,
+        this.doublePressEligibility,
+      )){
+        this.player?.setVelocityX(sideDash)
+      } else {
+        this.player?.setVelocityX(sideRun)
+      }
       this.player?.anims.play('right', true)
+
+
     } else {
       this.player?.setVelocityX(0)
       this.player?.anims.play('turn')
