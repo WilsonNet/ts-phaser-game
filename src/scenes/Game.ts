@@ -2,9 +2,10 @@ import Phaser, { Physics, Time } from 'phaser'
 import Bullets from '../skills/Bullets'
 import Preloader from './Preloader'
 import { createDudeAnims } from '~/anims/dude/dudeAnims'
+import Player from '~/characters/Player'
 export default class Game extends Phaser.Scene {
   private platforms?: Phaser.Physics.Arcade.StaticGroup
-  private player?: Phaser.Physics.Arcade.Sprite
+  private player!: Physics.Arcade.Sprite
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
   private stars?: Phaser.Physics.Arcade.Group
   private gameOver = false
@@ -35,11 +36,17 @@ export default class Game extends Phaser.Scene {
     ) as Phaser.Physics.Arcade.Sprite
     ground.setScale(2).refreshBody()
 
+    
+     
+    
+    this.player = this.physics.add.existing(new Player(this, 20, 20, 'dude')) as Player
+    // this.player = this.physics.add.sprite(20, 20, 'dude')
+    
     this.platforms.create(50, 250, 'ground')
     this.platforms.create(750, 220, 'ground')
     this.platforms.create(600, 400, 'ground')
-
-    this.player = this.physics.add.sprite(100, 450, 'dude')
+    // this.player = this.physics.add.sprite(20, 20, 'dude')
+    console.log('Game -> create -> this.player', this.player)
     this.player.setBounce(0.2)
     this.player.setCollideWorldBounds(true)
 
@@ -63,7 +70,6 @@ export default class Game extends Phaser.Scene {
         this.player?.y
       )
       angle = Phaser.Math.Angle.BetweenPoints(playerVector, pointer)
-
     })
     const bullets = new Bullets(this)
 
@@ -99,37 +105,36 @@ export default class Game extends Phaser.Scene {
     // Return
     return canDouble
   }
-  
+
   update (t: number, dt: number) {
     if (!this.player) return
     // Esquerda
-    const sideDash = 8600;
+    const sideDash = 8600
     const sideRun = 160
     if (!this.cursors?.right?.isDown && this.cursors?.left?.isDown) {
-
-      if (this.checkDoubleEligibility(
-        this.cursors.left as Phaser.Input.Keyboard.Key,
-        this.doublePressEligibility,
-      )){
+      if (
+        this.checkDoubleEligibility(
+          this.cursors.left as Phaser.Input.Keyboard.Key,
+          this.doublePressEligibility
+        )
+      ) {
         this.player?.setVelocityX(-sideDash)
       } else {
         this.player?.setVelocityX(-sideRun)
       }
       this.player?.anims.play('left', true)
-
     } else if (this.cursors?.right?.isDown && !this.cursors?.left?.isDown) {
-      
-      if (this.checkDoubleEligibility(
-        this.cursors.right as Phaser.Input.Keyboard.Key,
-        this.doublePressEligibility,
-      )){
+      if (
+        this.checkDoubleEligibility(
+          this.cursors.right as Phaser.Input.Keyboard.Key,
+          this.doublePressEligibility
+        )
+      ) {
         this.player?.setVelocityX(sideDash)
       } else {
         this.player?.setVelocityX(sideRun)
       }
       this.player?.anims.play('right', true)
-
-
     } else {
       this.player?.setVelocityX(0)
       this.player?.anims.play('turn')
