@@ -4,7 +4,7 @@ import { createDudeAnims } from '~/anims/dude/dudeAnims'
 import Player from '~/characters/Player'
 export default class Game extends Phaser.Scene {
   private platforms?: Phaser.Physics.Arcade.StaticGroup
-  private player!: Physics.Arcade.Sprite
+  private player?: Physics.Arcade.Sprite
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
 
   constructor () {
@@ -55,8 +55,6 @@ export default class Game extends Phaser.Scene {
     
   }
   update (t: number, dt: number) {
-
-    this.player.update(t, dt, this.cursors)
-    if (!this.player) return
+    this.player?.update(t, dt, this.cursors)
   }
 }

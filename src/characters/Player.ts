@@ -27,7 +27,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     scene.input.on('pointerdown', pointer => {
       if (!this) return
       console.log('Game -> create -> angle', angle)
-      bullets.fireBullet(this?.body.x, this?.body.y, angle)
+      bullets.fireBullet(this.body.x, this.body.y, angle)
     })
   }
 
