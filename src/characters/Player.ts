@@ -21,7 +21,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   private velocityCount = 0
   private stanceState = StanceState.RANGED
   private bullets!: Bullets
-  private mouseAngle = 0;
+  private mouseAngle = 0
 
   constructor (
     scene: Phaser.Scene,
@@ -36,8 +36,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     scene.sys.updateList.add(this)
     this.setBounce(0.4)
     this.setCollideWorldBounds(true)
-    const melee = new Melee(scene, this.x + 30, this.y + 30)
-    let angle = 0
+
     scene.input.on('pointermove', pointer => {
       if (!this) return
       const playerVector = new Phaser.Math.Vector2(this.x, this.y)
@@ -78,6 +77,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   machineAttack (pointer, scene: Phaser.Scene) {
     switch (this.stanceState) {
       case StanceState.MELEE:
+        const melee = new Melee(scene, this.x + 30, this.y + 30)
         break
       case StanceState.RANGED:
         this.bullets.fireBullet(this.body.x, this.body.y, this.mouseAngle)
@@ -161,10 +161,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     if (cursors?.up?.isDown) {
       this.handleJump()
     }
-    if (Phaser.Input.Keyboard.JustDown(cursors.switchMelee.isDown)) {
+    if (Phaser.Input.Keyboard.JustDown(cursors.switchMelee)) {
       this.stanceState = StanceState.MELEE
-    } else if (Phaser.Input.Keyboard.JustDown(cursors.switchRanged.isDown)) {
+      console.log(this.stanceState)
+    } else if (Phaser.Input.Keyboard.JustDown(cursors.switchRanged)) {
       this.stanceState = StanceState.RANGED
+      console.log(this.stanceState)
     }
   }
   handleJump () {
