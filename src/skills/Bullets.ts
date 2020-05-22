@@ -11,7 +11,6 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
     this.setActive(true);
     this.setVisible(true);
     this.scene.physics.velocityFromRotation(angle, 600, this.body.velocity)
-    console.log(this.body.velocity)
   }
 
   preUpdate(time: number, delta: number) {

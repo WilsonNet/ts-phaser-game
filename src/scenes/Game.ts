@@ -28,9 +28,6 @@ export default class Game extends Phaser.Scene {
     ) as Phaser.Physics.Arcade.Sprite
     ground.setScale(2).refreshBody()
 
-    
-     
-    
     this.player = (new Player(this, 20, 20, 'dude'))
     // this.player = this.physics.add.sprite(20, 20, 'dude')
     
@@ -38,7 +35,6 @@ export default class Game extends Phaser.Scene {
     this.platforms.create(750, 220, 'ground')
     this.platforms.create(600, 400, 'ground')
     // this.player = this.physics.add.sprite(20, 20, 'dude')
-    console.log('Game -> create -> this.player', this.player)
 
     camera.startFollow(this.player, true)
 
@@ -48,10 +44,13 @@ export default class Game extends Phaser.Scene {
       left: Phaser.Input.Keyboard.KeyCodes.A,
       down: Phaser.Input.Keyboard.KeyCodes.S,
       right: Phaser.Input.Keyboard.KeyCodes.D,
-      switchMelee: Phaser.Input.Keyboard.KeyCodes.ONE,
-      space: Phaser.Input.Keyboard.KeyCodes.SPACE
+      switchMelee: Phaser.Input.Keyboard.KeyCodes.Q,
+      switchRanged: Phaser.Input.Keyboard.KeyCodes.E,
+      space: Phaser.Input.Keyboard.KeyCodes.SPACE,
     })
-
+    this.add.graphics({
+      
+    })
     
   }
   update (t: number, dt: number) {
