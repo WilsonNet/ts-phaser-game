@@ -77,7 +77,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   machineAttack (pointer, scene: Phaser.Scene) {
     switch (this.stanceState) {
       case StanceState.MELEE:
-        const melee = new Melee(scene, this.x + 30, this.y + 30)
+        this.setVelocityX(0)
+        const melee = new Melee(scene, this.x + 30, this.y)
         break
       case StanceState.RANGED:
         this.bullets.fireBullet(this.body.x, this.body.y, this.mouseAngle)
