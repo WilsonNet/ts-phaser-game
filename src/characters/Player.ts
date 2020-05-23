@@ -1,25 +1,8 @@
 import Phaser from 'phaser'
 import Bullets from '../skills/Bullets'
 import Melee from '~/weapons/Melee'
+import { ActionState, MovementState, StanceState } from './playerStates'
 
-enum StanceState {
-  MELEE,
-  RANGED
-}
-
-enum MovementState {
-  NATURAL,
-  DASHING_RIGHT,
-  DASHING_LEFT,
-  WALL_JUMPING_LEFT,
-  WALL_JUMPING_RIGHT,
-  BLOCKING
-}
-
-enum ActionState {
-  NATURAL,
-  BLOCKING
-}
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   private doublePressEligibility = {}
   private movementState = MovementState.NATURAL
@@ -144,7 +127,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         ) {
           this.setVelocityX(0)
         }
-        this.anims.play('turn')
+        this.anims.play('idle')
         break
       default:
         break
@@ -156,11 +139,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   update (t: number, dt: number, cursors) {
-    if (
-      this.movementState !== MovementState.NATURAL ||
-      this.actionState !== ActionState.NATURAL
-    )
-      return
+    if (this.movementState !== MovementState.NATURAL) return
     // Esquerda
     const sideRun = 160
     if (!cursors?.right?.isDown && cursors?.left?.isDown) {
