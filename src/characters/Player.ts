@@ -7,12 +7,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   private doublePressEligibility = {}
   private movementState = MovementState.NATURAL
   private stateTimer = 0
-  private velocityCount = 0
   private stanceState = StanceState.RANGED
   private bullets!: Bullets
   private mouseAngle = 0
   private actionState = ActionState.NATURAL
-
+  private melee?: Melee
+  
   constructor (
     scene: Phaser.Scene,
     x: number,
@@ -70,7 +70,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     switch (this.stanceState) {
       case StanceState.MELEE:
         if (pointer.leftButtonDown()) {
-          const melee = new Melee(scene, this.x + 30, this.y)
+          this.melee = new Melee(scene, this.x, this.y)
         } else if (pointer.rightButtonDown()) {
           this.actionState = ActionState.BLOCKING
           console.count('Blocking')
@@ -139,6 +139,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   update (t: number, dt: number, cursors) {
+    this.melee?.updatePosition(this.x, this.y)
     if (this.movementState !== MovementState.NATURAL) return
     // Esquerda
     const sideRun = 160
@@ -170,7 +171,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       this.anims.play('right', true)
     } else {
       this.setVelocityX(0)
-      this.anims.play('turn')
     }
     if (cursors?.up?.isDown) {
       this.handleJump()
