@@ -11,11 +11,6 @@ export const createDudeAnims = (anims: Phaser.Animations.AnimationManager) => {
     repeat: -1,
   });
   anims.create({
-    key: 'turn',
-    frames: [{ key: 'dude', frame: 4 }],
-    frameRate: 20,
-  });
-  anims.create({
     key: 'right',
     frames: anims.generateFrameNumbers('dude', {
       start: 5,
@@ -23,5 +18,13 @@ export const createDudeAnims = (anims: Phaser.Animations.AnimationManager) => {
     }),
     frameRate: 10,
     repeat: -1,
+  });
+  anims.create({
+    key: 'turn',
+    frames: [{ key: 'dude', frame: 4 }],
+  });
+  anims.create({
+    key: 'right-idle',
+    frames: [{ key: 'dude', frame: 5 }],
   });
 }

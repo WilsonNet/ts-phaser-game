@@ -1,7 +1,8 @@
 import Phaser from 'phaser'
 import Bullets from '../skills/Bullets'
 import Melee from '~/weapons/Melee'
-import { ActionState, MovementState, StanceState } from './playerStates'
+
+import {FacingState, ActionState, MovementState, StanceState } from './playerStates'
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   private doublePressEligibility = {}
@@ -170,6 +171,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       }
       this.anims.play('right', true)
     } else {
+      this.anims.play('right-idle')
       this.setVelocityX(0)
     }
     if (cursors?.up?.isDown) {

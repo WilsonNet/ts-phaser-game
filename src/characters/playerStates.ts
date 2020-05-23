@@ -17,3 +17,8 @@ export enum ActionState {
   NATURAL,
   BLOCKING
 }
+
+export enum FacingState {
+  LEFT,
+  RIGHT
+}
