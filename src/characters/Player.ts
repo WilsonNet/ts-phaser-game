@@ -7,7 +7,7 @@ enum StanceState {
   RANGED
 }
 
-enum ActionState {
+enum MovementState {
   NATURAL,
   DASHING_RIGHT,
   DASHING_LEFT,
@@ -15,14 +15,20 @@ enum ActionState {
   WALL_JUMPING_RIGHT,
   BLOCKING
 }
+
+enum ActionState {
+  NATURAL,
+  BLOCKING
+}
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   private doublePressEligibility = {}
-  private actionState = ActionState.NATURAL
+  private movementState = MovementState.NATURAL
   private stateTimer = 0
   private velocityCount = 0
   private stanceState = StanceState.RANGED
   private bullets!: Bullets
   private mouseAngle = 0
+  private actionState = ActionState.NATURAL
 
   constructor (
     scene: Phaser.Scene,
@@ -83,8 +89,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         if (pointer.leftButtonDown()) {
           const melee = new Melee(scene, this.x + 30, this.y)
         } else if (pointer.rightButtonDown()) {
-          console.count('Blocking')
           this.actionState = ActionState.BLOCKING
+          console.count('Blocking')
         } else if (
           pointer.rightButtonReleased() //q &&
           // this.actionState === ActionState.BLOCKING
@@ -102,27 +108,26 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
   preUpdate (t, dt) {
     super.preUpdate(t, dt)
-    // console.log('Player -> preUpdate -> stateTimer', this.stateTimer)
 
-    if (this.actionState !== ActionState.NATURAL) this.stateTimer += dt
+    if (this.movementState !== MovementState.NATURAL) this.stateTimer += dt
     const dashSpeed = 1000
     const wallJumpHorizontal = 100
     const wallJumpHeight = -100
-    switch (this.actionState) {
-      case ActionState.DASHING_LEFT:
+    switch (this.movementState) {
+      case MovementState.DASHING_LEFT:
         this.setVelocityX(-dashSpeed)
         if (this.stateTimer >= 250) this.cleanActionState()
         break
-      case ActionState.DASHING_RIGHT:
+      case MovementState.DASHING_RIGHT:
         this.setVelocityX(dashSpeed)
         if (this.stateTimer >= 250) this.cleanActionState()
         break
-      case ActionState.WALL_JUMPING_LEFT:
+      case MovementState.WALL_JUMPING_LEFT:
         this.setVelocity(-wallJumpHorizontal, wallJumpHeight)
         this.stateTimer += dt
         if (this.stateTimer >= 700) this.cleanActionState()
         break
-      case ActionState.WALL_JUMPING_RIGHT:
+      case MovementState.WALL_JUMPING_RIGHT:
         this.setVelocity(wallJumpHorizontal, wallJumpHeight)
         this.stateTimer += dt
         if (this.stateTimer >= 700) this.cleanActionState()
@@ -131,15 +136,31 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.cleanActionState()
         break
     }
+    switch (this.actionState) {
+      case ActionState.BLOCKING:
+        if (
+          this.body.touching.down ||
+          this.movementState === MovementState.NATURAL
+        ) {
+          this.setVelocityX(0)
+        }
+        this.anims.play('turn')
+        break
+      default:
+        break
+    }
   }
-
   private cleanActionState () {
-    this.actionState = ActionState.NATURAL
+    this.movementState = MovementState.NATURAL
     this.stateTimer = 0
   }
 
   update (t: number, dt: number, cursors) {
-    if (this.actionState !== ActionState.NATURAL) return
+    if (
+      this.movementState !== MovementState.NATURAL ||
+      this.actionState !== ActionState.NATURAL
+    )
+      return
     // Esquerda
     const sideRun = 160
     if (!cursors?.right?.isDown && cursors?.left?.isDown) {
@@ -150,7 +171,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
           t
         )
       ) {
-        this.actionState = ActionState.DASHING_LEFT
+        this.movementState = MovementState.DASHING_LEFT
       } else {
         this.setVelocityX(-sideRun)
       }
@@ -163,7 +184,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
           t
         )
       ) {
-        this.actionState = ActionState.DASHING_RIGHT
+        this.movementState = MovementState.DASHING_RIGHT
       } else {
         this.setVelocityX(sideRun)
       }
@@ -187,9 +208,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     if (this.body.touching.down) {
       this.setVelocityY(-330)
     } else if (this.body.touching.right) {
-      this.actionState = ActionState.WALL_JUMPING_LEFT
+      this.movementState = MovementState.WALL_JUMPING_LEFT
     } else if (this.body.touching.left) {
-      this.actionState = ActionState.WALL_JUMPING_RIGHT
+      this.movementState = MovementState.WALL_JUMPING_RIGHT
     }
   }
 }
