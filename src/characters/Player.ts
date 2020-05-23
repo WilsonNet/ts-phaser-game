@@ -12,7 +12,8 @@ enum ActionState {
   DASHING_RIGHT,
   DASHING_LEFT,
   WALL_JUMPING_LEFT,
-  WALL_JUMPING_RIGHT
+  WALL_JUMPING_RIGHT,
+  BLOCKING
 }
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   private doublePressEligibility = {}
@@ -34,6 +35,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     scene.physics.add.existing(this)
     scene.sys.displayList.add(this)
     scene.sys.updateList.add(this)
+    scene.input.mouse.disableContextMenu()
     this.setBounce(0.4)
     this.setCollideWorldBounds(true)
 
@@ -45,6 +47,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.bullets = new Bullets(scene)
 
     scene.input.on('pointerdown', pointer => this.machineAttack(pointer, scene))
+    scene.input.on('pointerup', pointer => this.machineAttack(pointer, scene))
   }
 
   checkDoubleEligibility (
@@ -74,11 +77,21 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     return canDouble
   }
 
-  machineAttack (pointer, scene: Phaser.Scene) {
+  machineAttack (pointer: Phaser.Input.Pointer, scene: Phaser.Scene) {
     switch (this.stanceState) {
       case StanceState.MELEE:
-        this.setVelocityX(0)
-        const melee = new Melee(scene, this.x + 30, this.y)
+        if (pointer.leftButtonDown()) {
+          const melee = new Melee(scene, this.x + 30, this.y)
+        } else if (pointer.rightButtonDown()) {
+          console.count('Blocking')
+          this.actionState = ActionState.BLOCKING
+        } else if (
+          pointer.rightButtonReleased() //q &&
+          // this.actionState === ActionState.BLOCKING
+        ) {
+          console.count('Unblocking')
+          this.actionState = ActionState.NATURAL
+        }
         break
       case StanceState.RANGED:
         this.bullets.fireBullet(this.body.x, this.body.y, this.mouseAngle)
