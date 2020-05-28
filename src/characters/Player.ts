@@ -2,7 +2,12 @@ import Phaser from 'phaser'
 import Bullets from '../skills/Bullets'
 import Melee from '~/weapons/Melee'
 
-import {FacingState, ActionState, MovementState, StanceState } from './playerStates'
+import {
+  FacingState,
+  ActionState,
+  MovementState,
+  StanceState
+} from './playerStates'
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   private doublePressEligibility = {}
@@ -13,7 +18,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   private mouseAngle = 0
   private actionState = ActionState.NATURAL
   private melee?: Melee
-  
+
   constructor (
     scene: Phaser.Scene,
     x: number,
@@ -66,12 +71,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     // Return
     return canDouble
   }
+  meleeAttack (scene: Phaser.Scene) {
+    this.melee = new Melee(scene, this.x, this.y)
+  }
 
   machineAttack (pointer: Phaser.Input.Pointer, scene: Phaser.Scene) {
     switch (this.stanceState) {
       case StanceState.MELEE:
         if (pointer.leftButtonDown()) {
-          this.melee = new Melee(scene, this.x, this.y)
+          this.meleeAttack(scene)
         } else if (pointer.rightButtonDown()) {
           this.actionState = ActionState.BLOCKING
           console.count('Blocking')
@@ -171,7 +179,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       }
       this.anims.play('right', true)
     } else {
-      this.anims.play('right-idle')
+      const currentKey = this.anims.getCurrentKey()?.split('-')
+      const direction = currentKey?.[0]
+      if (direction === 'left') {
+        this.anims.play('left-idle')
+      } else {
+        this.anims.play('right-idle')
+      }
       this.setVelocityX(0)
     }
     if (cursors?.up?.isDown) {
