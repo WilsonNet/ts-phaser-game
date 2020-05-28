@@ -102,32 +102,39 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     super.preUpdate(t, dt)
 
     if (this.movementState !== MovementState.NATURAL) this.stateTimer += dt
+
     const dashSpeed = 1000
     const wallJumpHorizontal = 100
     const wallJumpHeight = -100
+
     switch (this.movementState) {
       case MovementState.DASHING_LEFT:
         this.setVelocityX(-dashSpeed)
         if (this.stateTimer >= 250) this.cleanActionState()
         break
+
       case MovementState.DASHING_RIGHT:
         this.setVelocityX(dashSpeed)
         if (this.stateTimer >= 250) this.cleanActionState()
         break
+
       case MovementState.WALL_JUMPING_LEFT:
         this.setVelocity(-wallJumpHorizontal, wallJumpHeight)
         this.stateTimer += dt
         if (this.stateTimer >= 700) this.cleanActionState()
         break
+
       case MovementState.WALL_JUMPING_RIGHT:
         this.setVelocity(wallJumpHorizontal, wallJumpHeight)
         this.stateTimer += dt
         if (this.stateTimer >= 700) this.cleanActionState()
         break
+
       default:
         this.cleanActionState()
         break
     }
+
     switch (this.actionState) {
       case ActionState.BLOCKING:
         if (
@@ -142,9 +149,21 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         break
     }
   }
+
   private cleanActionState () {
     this.movementState = MovementState.NATURAL
     this.stateTimer = 0
+  }
+
+  decideIdle () {
+    const currentKey = this.anims.getCurrentKey()?.split('-')
+    const direction = currentKey?.[0]
+    if (direction === 'left') {
+      this.anims.play('left')
+    } else {
+      this.anims.play('right')
+    }
+    this.setVelocityX(0)
   }
 
   update (t: number, dt: number, cursors) {
@@ -179,14 +198,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       }
       this.anims.play('right', true)
     } else {
-      const currentKey = this.anims.getCurrentKey()?.split('-')
-      const direction = currentKey?.[0]
-      if (direction === 'left') {
-        this.anims.play('left-idle')
-      } else {
-        this.anims.play('right-idle')
-      }
-      this.setVelocityX(0)
+      this.decideIdle()
     }
     if (cursors?.up?.isDown) {
       this.handleJump()
