@@ -6,7 +6,7 @@ import {
   FacingState,
   ActionState,
   MovementState,
-  StanceState
+  StanceState,
 } from './playerStates'
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
@@ -19,7 +19,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   private actionState = ActionState.NATURAL
   private melee?: Melee
 
-  constructor (
+  constructor(
     scene: Phaser.Scene,
     x: number,
     y: number,
@@ -34,18 +34,20 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.setBounce(0.4)
     this.setCollideWorldBounds(true)
 
-    scene.input.on('pointermove', pointer => {
+    scene.input.on('pointermove', (pointer) => {
       if (!this) return
       const playerVector = new Phaser.Math.Vector2(this.x, this.y)
       this.mouseAngle = Phaser.Math.Angle.BetweenPoints(playerVector, pointer)
     })
     this.bullets = new Bullets(scene)
 
-    scene.input.on('pointerdown', pointer => this.machineAttack(pointer, scene))
-    scene.input.on('pointerup', pointer => this.machineAttack(pointer, scene))
+    scene.input.on('pointerdown', (pointer) =>
+      this.machineAttack(pointer, scene)
+    )
+    scene.input.on('pointerup', (pointer) => this.machineAttack(pointer, scene))
   }
 
-  checkDoubleEligibility (
+  checkDoubleEligibility(
     key: Phaser.Input.Keyboard.Key,
     eligibilityState: Object,
     time: number
@@ -66,16 +68,16 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     //State update
     eligibilityState[keyCode] = {
       canDouble: !canDouble, // Can't double if doubled
-      lastTime: currentTime
+      lastTime: currentTime,
     }
     // Return
     return canDouble
   }
-  meleeAttack (scene: Phaser.Scene) {
+  meleeAttack(scene: Phaser.Scene) {
     this.melee = new Melee(scene, this.x, this.y)
   }
 
-  machineAttack (pointer: Phaser.Input.Pointer, scene: Phaser.Scene) {
+  machineAttack(pointer: Phaser.Input.Pointer, scene: Phaser.Scene) {
     switch (this.stanceState) {
       case StanceState.MELEE:
         if (pointer.leftButtonDown()) {
@@ -98,7 +100,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  preUpdate (t, dt) {
+  preUpdate(t, dt) {
     super.preUpdate(t, dt)
 
     if (this.movementState !== MovementState.NATURAL) this.stateTimer += dt
@@ -150,12 +152,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  private cleanMovementState () {
+  private cleanMovementState() {
     this.movementState = MovementState.NATURAL
     this.stateTimer = 0
   }
 
-  decideIdle () {
+  decideFacing = () => {
     const currentKey = this.anims.getCurrentKey()?.split('-')
     const direction = currentKey?.[0]
     if (direction === 'left') {
@@ -166,7 +168,18 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.setVelocityX(0)
   }
 
-  update (t: number, dt: number, cursors) {
+  decideIdle() {
+    const currentKey = this.anims.getCurrentKey()?.split('-')
+    const direction = currentKey?.[0]
+    if (direction === 'left') {
+      this.anims.play('left')
+    } else {
+      this.anims.play('right')
+    }
+    this.setVelocityX(0)
+  }
+
+  update(t: number, dt: number, cursors) {
     this.melee?.updatePosition(this.x, this.y)
     if (this.movementState !== MovementState.NATURAL) return
     // Esquerda
@@ -211,7 +224,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       console.log(this.stanceState)
     }
   }
-  handleJump () {
+  handleJump() {
     if (this.body.touching.down) {
       this.setVelocityY(-330)
     } else if (this.body.touching.right) {
