@@ -74,7 +74,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     return canDouble
   }
   meleeAttack(scene: Phaser.Scene) {
-    this.melee = new Melee(scene, this.x, this.y)
+    const facing = this.decideFacing()
+    this.melee = new Melee(scene, facing, this.x, this.y)
   }
 
   machineAttack(pointer: Phaser.Input.Pointer, scene: Phaser.Scene) {
@@ -84,18 +85,19 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
           this.meleeAttack(scene)
         } else if (pointer.rightButtonDown()) {
           this.actionState = ActionState.BLOCKING
+          // TODO Add Block
           console.count('Blocking')
         } else if (
           pointer.rightButtonReleased() //q &&
           // this.actionState === ActionState.BLOCKING
         ) {
+          // TODO Add unblocking
           console.count('Unblocking')
           this.actionState = ActionState.NATURAL
         }
         break
       case StanceState.RANGED:
         this.bullets.fireBullet(this.body.x, this.body.y, this.mouseAngle)
-
         break
     }
   }
@@ -222,6 +224,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       console.log(this.stanceState)
     }
   }
+
   handleJump() {
     if (this.body.touching.down) {
       this.setVelocityY(-330)
