@@ -110,28 +110,28 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     switch (this.movementState) {
       case MovementState.DASHING_LEFT:
         this.setVelocityX(-dashSpeed)
-        if (this.stateTimer >= 250) this.cleanActionState()
+        if (this.stateTimer >= 250) this.cleanMovementState()
         break
 
       case MovementState.DASHING_RIGHT:
         this.setVelocityX(dashSpeed)
-        if (this.stateTimer >= 250) this.cleanActionState()
+        if (this.stateTimer >= 250) this.cleanMovementState()
         break
 
       case MovementState.WALL_JUMPING_LEFT:
         this.setVelocity(-wallJumpHorizontal, wallJumpHeight)
         this.stateTimer += dt
-        if (this.stateTimer >= 700) this.cleanActionState()
+        if (this.stateTimer >= 700) this.cleanMovementState()
         break
 
       case MovementState.WALL_JUMPING_RIGHT:
         this.setVelocity(wallJumpHorizontal, wallJumpHeight)
         this.stateTimer += dt
-        if (this.stateTimer >= 700) this.cleanActionState()
+        if (this.stateTimer >= 700) this.cleanMovementState()
         break
 
       default:
-        this.cleanActionState()
+        this.cleanMovementState()
         break
     }
 
@@ -150,7 +150,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  private cleanActionState () {
+  private cleanMovementState () {
     this.movementState = MovementState.NATURAL
     this.stateTimer = 0
   }
