@@ -161,17 +161,15 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     const currentKey = this.anims.getCurrentKey()?.split('-')
     const direction = currentKey?.[0]
     if (direction === 'left') {
-      this.anims.play('left')
+      return FacingState.LEFT
     } else {
-      this.anims.play('right')
+      return FacingState.RIGHT
     }
-    this.setVelocityX(0)
   }
 
   decideIdle() {
-    const currentKey = this.anims.getCurrentKey()?.split('-')
-    const direction = currentKey?.[0]
-    if (direction === 'left') {
+    const currentFacing = this.decideFacing()
+    if (currentFacing === FacingState.LEFT) {
       this.anims.play('left')
     } else {
       this.anims.play('right')
