@@ -2,18 +2,19 @@ import Phaser, { Physics, Time } from 'phaser'
 import Preloader from './Preloader'
 import { createDudeAnims } from '~/anims/dude/dudeAnims'
 import Player from '~/characters/Player'
+import { playableControls } from '~/characters/Controls'
 export default class Game extends Phaser.Scene {
   private platforms?: Phaser.Physics.Arcade.StaticGroup
   private player?: Physics.Arcade.Sprite
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
 
-  constructor () {
+  constructor() {
     super('game')
   }
 
-  preload () {}
+  preload() {}
 
-  create () {
+  create() {
     const camera = this.cameras.main
     createDudeAnims(this.anims)
 
@@ -28,9 +29,9 @@ export default class Game extends Phaser.Scene {
     ) as Phaser.Physics.Arcade.Sprite
     ground.setScale(2).refreshBody()
 
-    this.player = (new Player(this, 20, 20, 'dude'))
+    this.player = new Player(this, 25, 20, 'dude')
     // this.player = this.physics.add.sprite(20, 20, 'dude')
-    
+
     this.platforms.create(50, 250, 'ground')
     this.platforms.create(750, 220, 'ground')
     this.platforms.create(600, 400, 'ground')
@@ -39,21 +40,10 @@ export default class Game extends Phaser.Scene {
     camera.startFollow(this.player, true)
 
     this.physics.add.collider(this.player, this.platforms)
-    this.cursors = this.input.keyboard.addKeys({
-      up: Phaser.Input.Keyboard.KeyCodes.W,
-      left: Phaser.Input.Keyboard.KeyCodes.A,
-      down: Phaser.Input.Keyboard.KeyCodes.S,
-      right: Phaser.Input.Keyboard.KeyCodes.D,
-      switchMelee: Phaser.Input.Keyboard.KeyCodes.Q,
-      switchRanged: Phaser.Input.Keyboard.KeyCodes.E,
-      space: Phaser.Input.Keyboard.KeyCodes.SPACE,
-    })
-    this.add.graphics({
-      
-    })
-    
+    this.cursors = this.input.keyboard.addKeys(playableControls)
+    this.add.graphics({})
   }
-  update (t: number, dt: number) {
+  update(t: number, dt: number) {
     this.player?.update(t, dt, this.cursors)
   }
 }
