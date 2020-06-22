@@ -11,6 +11,8 @@ export default class Game extends Phaser.Scene {
   private debbugableCursors!: Phaser.Types.Input.Keyboard.CursorKeys
   private hpText?: Phaser.GameObjects.Text
   private hpText2?: Phaser.GameObjects.Text
+  private leftTeam: Player[]
+  private rightTeam: Playter[]
 
   constructor() {
     super('game')
@@ -35,8 +37,8 @@ export default class Game extends Phaser.Scene {
 
     this.player = new Player(this, 25, 20, 'dude')
     this.debbugablePlayer = new Player(this, 400, 20, 'dude')
-    this.player.enemies = [this.debbugablePlayer]
-    this.debbugablePlayer.enemies = [this.player]
+    this.leftTeam = [this.player]
+    this.rightTeam = [this.debbugablePlayer]
 
     this.platforms.create(50, 250, 'ground')
     this.platforms.create(750, 220, 'ground')

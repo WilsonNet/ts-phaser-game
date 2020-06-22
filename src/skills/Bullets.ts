@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import Player from '../characters/Player'
 
 class Bullet extends Phaser.Physics.Arcade.Sprite {
   constructor(scene: Phaser.Scene, x: number, y: number) {
@@ -23,7 +24,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
 }
 
 export default class Bullets extends Phaser.Physics.Arcade.Group {
-  constructor(scene: Phaser.Scene) {
+  constructor(scene: Phaser.Scene, enemies: Player[]) {
     super(scene.physics.world, scene);
     this.createMultiple({
       frameQuantity: 900,
@@ -32,6 +33,8 @@ export default class Bullets extends Phaser.Physics.Arcade.Group {
       visible: false,
       classType: Bullet,
     });
+
+    
 
   }
 

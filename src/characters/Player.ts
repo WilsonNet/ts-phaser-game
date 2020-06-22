@@ -19,14 +19,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   private actionState = ActionState.NATURAL
   private melee?: Melee
   private _hp = 100
-  private _enemies!: Player[]
-
-  public get enemies(): Player[] {
-    return this._enemies
-  }
-  public set enemies(value: Player[]) {
-    this._enemies = value
-  }
 
   public get hp() {
     return this._hp
@@ -41,7 +33,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     x: number,
     y: number,
     texture: string,
-    frame?: string | number
+    frame?: string | number,
+    enemies: Player[]
   ) {
     super(scene, x, y, texture, frame)
     scene.physics.add.existing(this)
@@ -56,7 +49,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       const playerVector = new Phaser.Math.Vector2(this.x, this.y)
       this.mouseAngle = Phaser.Math.Angle.BetweenPoints(playerVector, pointer)
     })
-    this.bullets = new Bullets(scene)
+    this.bullets = new Bullets(scene, enemies)
 
     scene.input.on('pointerdown', (pointer) =>
       this.machineAttack(pointer, scene)
