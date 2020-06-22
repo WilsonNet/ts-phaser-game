@@ -5,10 +5,12 @@ import Player from '~/characters/Player'
 import { playableControls, debuggableControls } from '~/characters/Controls'
 export default class Game extends Phaser.Scene {
   private platforms?: Phaser.Physics.Arcade.StaticGroup
-  private player?: Physics.Arcade.Sprite
-  private debbugablePlayer?: Physics.Arcade.Sprite
+  private player?: Player
+  private debbugablePlayer?: Player
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
   private debbugableCursors!: Phaser.Types.Input.Keyboard.CursorKeys
+  private hpText?: Phaser.GameObjects.Text
+  private hpText2?: Phaser.GameObjects.Text
 
   constructor() {
     super('game')
@@ -33,12 +35,24 @@ export default class Game extends Phaser.Scene {
 
     this.player = new Player(this, 25, 20, 'dude')
     this.debbugablePlayer = new Player(this, 400, 20, 'dude')
+    this.player.enemies = [this.debbugablePlayer]
+    this.debbugablePlayer.enemies = [this.player]
 
     this.platforms.create(50, 250, 'ground')
     this.platforms.create(750, 220, 'ground')
     this.platforms.create(600, 400, 'ground')
 
     camera.startFollow(this.player, true)
+
+    this.hpText = this.add.text(16, 16, `hp: ${this.player.hp}`, {
+      fontSize: '32px',
+      fill: '#000',
+    })
+
+    this.hpText2 = this.add.text(640, 16, `hp: ${this.debbugablePlayer.hp}`, {
+      fontSize: '32px',
+      fill: '#000',
+    })
 
     this.physics.add.collider(this.player, this.platforms)
     this.physics.add.collider(this.debbugablePlayer, this.platforms)

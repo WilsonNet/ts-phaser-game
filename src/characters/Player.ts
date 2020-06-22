@@ -18,7 +18,23 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   private mouseAngle = 0
   private actionState = ActionState.NATURAL
   private melee?: Melee
-  private hp = 100;
+  private _hp = 100
+  private _enemies!: Player[]
+
+  public get enemies(): Player[] {
+    return this._enemies
+  }
+  public set enemies(value: Player[]) {
+    this._enemies = value
+  }
+
+  public get hp() {
+    return this._hp
+  }
+
+  public set hp(value) {
+    this._hp = value
+  }
 
   constructor(
     scene: Phaser.Scene,
